@@ -1,0 +1,26 @@
+{
+  "name": "ranchdata-backend",
+  "version": "0.0.1",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "node ./node_modules/eslint/bin/eslint.js **/*.js || true"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mjpohja/ranchdata-backend.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mjpohja/ranchdata-backend/issues"
+  },
+  "homepage": "https://github.com/mjpohja/ranchdata-backend#readme",
+  "dependencies": {
+    "hapi": "^13.4.1"
+  },
+  "devDependencies": {
+    "eslint": "^2.11.1"
+  }
+}
