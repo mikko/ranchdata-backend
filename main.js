@@ -1,23 +1,21 @@
 'use strict';
 
-const Hapi = require('hapi');
+const server = require('./lib/server');
+const scheduler = require('./lib/scheduler')
+const fs = require('fs');
+const path = require('path');
 
-const server = new Hapi.Server();
+const dataSourcePath = './datasource';
 
+const saveData = function(type, value) {
+    console.log(`Saving data for ${type}, ${value}`);
+};
 
-server.connection({ port: 3000 });
-
-server.route({
-    method: 'GET',
-    path: '/',
-    handler: (req, reply) => {
-        reply('<h1>KUKKUU!</h1>');
-    }
-})
-
-server.start((err) => {
-    if (err) {
-        throw err;
-    }
-    console.log('Server running', server.info.uri);
+fs.readdirSync(dataSourcePath).forEach(function(file) {
+  let dataSource = require(`${dataSourcePath}/${file}`);
+  dataSource.initialize(saveData);
+  scheduler.startJob(dataSource.scheduleRule, dataSource.job)
 });
+
+
+server.start(3000);
