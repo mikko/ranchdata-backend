@@ -19,7 +19,9 @@
   "homepage": "https://github.com/mjpohja/ranchdata-backend#readme",
   "dependencies": {
     "hapi": "^13.4.1",
-    "node-schedule": "^1.1.0"
+    "lodash": "^4.13.1",
+    "node-schedule": "^1.1.0",
+    "ws": "^1.1.0"
   },
   "devDependencies": {
     "eslint": "^2.11.1"
