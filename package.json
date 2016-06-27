@@ -5,7 +5,9 @@
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "node ./node_modules/eslint/bin/eslint.js **/*.js || true"
+    "lint": "node ./node_modules/eslint/bin/eslint.js **/*.js || true",
+    "start": "node main.js",
+    "mock": "node mock/mockGateway.js"
   },
   "repository": {
     "type": "git",
@@ -18,9 +20,12 @@
   },
   "homepage": "https://github.com/mjpohja/ranchdata-backend#readme",
   "dependencies": {
+    "bluebird": "^3.4.1",
     "hapi": "^13.4.1",
     "lodash": "^4.13.1",
     "node-schedule": "^1.1.0",
+    "pg": "^6.0.0",
+    "request": "^2.72.0",
     "ws": "^1.1.0"
   },
   "devDependencies": {
