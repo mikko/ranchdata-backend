@@ -6,23 +6,9 @@ const fs = require('fs');
 const path = require('path');
 const _ = require('lodash');
 
-const dataSourcePath = './datasource';
+const routes = require('./lib/routes');
 
-const saveData = function(type, value) {
-    console.log(`Saving data for ${type}, ${value}`);
-};
-
-fs.readdirSync(dataSourcePath).forEach(function(file) {
-  let dataSource = require(`${dataSourcePath}/${file}`);
-  dataSource.initialize(saveData);
-  scheduler.startJob(dataSource.scheduleRule, dataSource.job)
-});
-
-
-server.start(3000);
-
-
-
+server.start(3000, routes);
 
 // Testing websockets
 const WebSockerServer = require('ws').Server;

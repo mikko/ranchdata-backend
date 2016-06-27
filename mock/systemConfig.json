@@ -1,0 +1,20 @@
+{
+    "sensors": [
+        {
+            "name": "Olohuone",
+            "type": "temperature"
+        },
+        {
+            "name": "Sauna",
+            "type": "temperature"
+        },
+        {
+            "name": "Keittiö",
+            "type": "temperature"
+        },
+        {
+            "name": "Takka",
+            "type": "temperature"
+        }
+    ]
+}
