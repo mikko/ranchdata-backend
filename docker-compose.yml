@@ -1,0 +1,7 @@
+postgres:
+  image: postgres:9
+  environment:
+    - POSTGRES_USER=ranch
+    - POSTGRES_PASS=ranch
+  ports:
+    - "5432:5432"
