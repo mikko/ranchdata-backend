@@ -1,19 +1,19 @@
-"use strict";
+'use strict';
 
 const assert = require('assert');
 
 
-const config = require('../knexfile.js');  
-const env = 'test';  
+const config = require('../knexfile.js');
+const env = 'test';
 
 const knex = require('knex')(config[env]);
 
 describe('Test database', function() {
     it('should initialize with seed', function(done) {
-        knex.seed.run(config[env]).then(c => {
+        knex.seed.run(config[env]).then(() => {
             done();
         });
-    })
+    });
 });
 
 describe('User model', function() {
@@ -62,7 +62,7 @@ describe('User model', function() {
                 done();
             });
     });
-  
+
 });
 
 describe.skip('Sensor model', function() {
@@ -83,7 +83,7 @@ describe.skip('Sensor model', function() {
     it('should update sensor data', function() {
         assert.equal(true, false);
     });
-  
+
 });
 
 describe.skip('Measurement model', function() {
