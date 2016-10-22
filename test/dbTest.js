@@ -1,101 +1,161 @@
 'use strict';
 
 const assert = require('assert');
-
-
+const moment = require('moment');
 const config = require('../knexfile.js');
 const env = 'test';
 
 const knex = require('knex')(config[env]);
 
-describe('Test database', function() {
-    it('should initialize with seed', function(done) {
-        knex.seed.run(config[env]).then(() => {
-            done();
+describe('Data models', function() {
+
+    describe('Test database', function() {
+        it('should initialize with seed', function(done) {
+            knex.seed.run(config[env]).then(() => {
+                done();
+            });
         });
     });
-});
 
-describe('User model', function() {
-    const User = require('../lib/models/user.js');
-    const newUserName = 'testUser';
-    const newPassword = 'password';
-    const existingApiKey = '00000000-0000-0000-0000-000000000000';
-    let newUserId = -1;
+    describe('User model', function() {
+        const User = require('../lib/models/user.js');
+        const newUserName = 'testUser';
+        const newPassword = 'password';
+        const existingApiKey = '00000000-0000-0000-0000-000000000000';
+        let newUserId = -1;
 
-    it('should create new user for username and password', function(done) {
-        User.createUser(newUserName, newPassword)
-            .then(userId => {
-                assert.equal(Number.isFinite(userId), true);
-                newUserId = userId;
-                done();
-            });
-    });
-    it('should get user id for username and password', function(done) {
-        User.getUserIdByUsernameAndPassword(newUserName, newPassword)
-            .then(userId => {
-                assert.equal(userId, newUserId);
-                done();
-            });
-    });
-    it('should get user id for api key', function(done) {
-        User.getUserIdByApiKey(existingApiKey)
-            .then(userId => {
-                assert.equal(userId, 1);
-                done();
-            });
-    });
-    it('should get api key for user id', function(done) {
-        User.getApiKey(1)
-            .then(apiKey => {
-                assert.equal(existingApiKey, apiKey);
-                done();
-            });
-    });
-    it('should get full user details for user id', function(done) {
-        User.getUserDetails(1)
-            .then(user => {
-                assert.equal(user.id, 1);
-                assert.equal(user.username, 'firstUser');
-                assert.equal(user.password, 'password');
-                assert.equal(user.api_key, '00000000-0000-0000-0000-000000000000');
-                done();
-            });
-    });
+        it('should create new user for username and password', function(done) {
+            User.createUser(newUserName, newPassword)
+                .then(userId => {
+                    assert.equal(Number.isFinite(userId), true);
+                    newUserId = userId;
+                    done();
+                });
+        });
+        it('should get user id for username and password', function(done) {
+            User.getUserIdByUsernameAndPassword(newUserName, newPassword)
+                .then(userId => {
+                    assert.equal(userId, newUserId);
+                    done();
+                });
+        });
+        it('should get user id for api key', function(done) {
+            User.getUserIdByApiKey(existingApiKey)
+                .then(userId => {
+                    assert.equal(userId, 1);
+                    done();
+                });
+        });
+        it('should get api key for user id', function(done) {
+            User.getApiKey(1)
+                .then(apiKey => {
+                    assert.equal(existingApiKey, apiKey);
+                    done();
+                });
+        });
+        it('should get full user details for user id', function(done) {
+            User.getUserDetails(1)
+                .then(user => {
+                    assert.equal(user.id, 1);
+                    assert.equal(user.username, 'firstUser');
+                    assert.equal(user.password, 'password');
+                    assert.equal(user.api_key, '00000000-0000-0000-0000-000000000000');
+                    done();
+                });
+        });
 
-});
-
-describe.skip('Sensor model', function() {
-    const Sensor = require('../lib/models/sensor.js');
-
-    it('should create new sensor', function() {
-        assert.equal(true, false);
-    });
-    it('should get sensor data for id', function() {
-        assert.equal(true, false);
-    });
-    it('should get sensor for serial', function() {
-        assert.equal(true, false);
-    });
-    it('should get sensors for user', function() {
-        assert.equal(true, false);
-    });
-    it('should update sensor data', function() {
-        assert.equal(true, false);
     });
 
-});
+    describe('Sensor model', function() {
+        const Sensor = require('../lib/models/sensor.js');
 
-describe.skip('Measurement model', function() {
-    const Measurement = require('../lib/models/measurement.js');
+        const userId = 1;
+        const existingSensorId = 1;
+        const existingSensorSerial = 'sensor-1';
+        const existingSensorName = 'First sensor';
+        const existingSensorUnit = 'mk';
 
-    it('should create new measurement', function() {
-        assert.equal(true, false);
+        const newSensorName = 'Test sensor';
+        const newSensorSerial = 'test-sensor-1';
+        const newSensorUnit = 'm';
+
+        it('should create new sensor', function(done) {
+            Sensor.createSensor(userId, newSensorSerial, newSensorName, newSensorUnit)
+                .then(sensorId => {
+                    assert.equal(Number.isFinite(sensorId), true);
+                    done();
+                });
+        });
+        it('should get sensor data for id', function(done) {
+            Sensor.getSensorById(userId, existingSensorId)
+                .then(sensor => {
+                    assert.equal(sensor.id, existingSensorId);
+                    assert.equal(sensor.serial, existingSensorSerial);
+                    assert.equal(sensor.name, existingSensorName);
+                    assert.equal(sensor.unit, existingSensorUnit);
+                    done();
+                });
+
+        });
+        it('should get sensor for serial', function(done) {
+            Sensor.getSensorBySerial(userId, existingSensorSerial)
+                .then(sensor => {
+                    assert.equal(sensor.id, existingSensorId);
+                    assert.equal(sensor.serial, existingSensorSerial);
+                    assert.equal(sensor.name, existingSensorName);
+                    assert.equal(sensor.unit, existingSensorUnit);
+                    done();
+                });
+        });
+        it('should get sensors for user', function(done) {
+            Sensor.getSensorsByUser(userId)
+                .then(sensors => {
+                    assert.equal(sensors.length, 2);
+                    done();
+                })
+
+        });
+        it('should update sensor data', function(done) {
+            Sensor.updateSensor(userId, existingSensorId, existingSensorName, existingSensorUnit)
+                .then(updatedId => {
+                    assert.equal(updatedId, existingSensorId);
+                    done();
+                });
+        });
+
     });
-    it('should get latest measurement for sensor id', function() {
-        assert.equal(true, false);
-    });
-    it('should get measurements for range', function() {
-        assert.equal(true, false);
+
+    describe('Measurement model', function() {
+        const Measurement = require('../lib/models/measurement.js');
+
+        const userId = 1;
+        const sensorId = 1;
+        const existingLatestValue = 99;
+
+        const newValue = 9999;
+        const rangeBegin = moment('2016-10-10 09:01');
+        const rangeEnd = moment('2016-10-10 09:50');
+
+        it('should create new measurement', function(done) {
+            Measurement.createMeasurement(sensorId, newValue)
+                .then(measurementId => {
+                    assert.equal(Number.isFinite(measurementId), true);
+                    done();
+                });
+        });
+        it('should get latest measurement for sensor id', function(done) {
+            Measurement.getLatestMeasurement(sensorId)
+                .then(measurement => {
+                    assert.equal(measurement.value, existingLatestValue);
+                    done();
+                });
+        });
+        it('should get measurements for range', function(done) {
+            Measurement.getMeasurementsForRange(sensorId, rangeBegin, rangeEnd)
+                .then(measurements => {
+                    assert.equal(measurements.length, 50);
+                    done();
+                });
+        });
     });
 });
