@@ -2,19 +2,24 @@
 
 const assert = require('assert');
 const moment = require('moment');
-const config = require('../knexfile.js');
+const configFile = require('../knexfile.js');
 const env = 'test';
+const config = configFile[env];
 
-const knex = require('knex')(config[env]);
+const knex = require('knex')(config);
 
 describe('Data models', function() {
-
-    describe('Test database', function() {
-        it('should initialize with seed', function(done) {
-            knex.seed.run(config[env]).then(() => {
+    before(function(done) {
+        knex.migrate.rollback(config)
+            .then(() => {
+                return knex.migrate.latest(config);
+            })
+            .then(() => {
+                return knex.seed.run(config);
+            })
+            .then(() => {
                 done();
             });
-        });
     });
 
     describe('User model', function() {
@@ -110,7 +115,7 @@ describe('Data models', function() {
         it('should get sensors for user', function(done) {
             Sensor.getSensorsByUser(userId)
                 .then(sensors => {
-                    assert.equal(sensors.length, 2);
+                    assert.equal(sensors.length, 3);
                     done();
                 })
 
@@ -133,8 +138,8 @@ describe('Data models', function() {
         const existingLatestValue = 99;
 
         const newValue = 9999;
-        const rangeBegin = moment('2016-10-10 09:01');
-        const rangeEnd = moment('2016-10-10 09:50');
+        const rangeBegin = moment.utc('2016-10-10 12:01');
+        const rangeEnd = moment.utc('2016-10-10 12:50');
 
         it('should create new measurement', function(done) {
             Measurement.createMeasurement(sensorId, newValue)
@@ -146,7 +151,7 @@ describe('Data models', function() {
         it('should get latest measurement for sensor id', function(done) {
             Measurement.getLatestMeasurement(sensorId)
                 .then(measurement => {
-                    assert.equal(measurement.value, existingLatestValue);
+                    assert.equal(measurement.value, newValue);
                     done();
                 });
         });
