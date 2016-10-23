@@ -18,7 +18,7 @@ const populateUsers = knex => {
         // Inserts seed entries
         knex('users')
             .insert({
-                id: 1, 
+                id: 1,
                 username: 'firstUser',
                 password: 'password',
                 salt: 'salt',
@@ -26,7 +26,7 @@ const populateUsers = knex => {
             }),
         knex('users')
             .insert({
-                id: 2, 
+                id: 2,
                 username: 'secondUser',
                 password: 'otherPassword',
                 salt: 'salt',
@@ -40,7 +40,7 @@ const populateSensors = knex => {
         // Inserts seed entries
         knex('sensors')
             .insert({
-                id: 1, 
+                id: 1,
                 serial: 'sensor-1',
                 name: 'First sensor',
                 unit: 'mk',
@@ -48,7 +48,7 @@ const populateSensors = knex => {
             }),
         knex('sensors')
             .insert({
-                id: 2, 
+                id: 2,
                 serial: 'sensor-2',
                 name: 'Second sensor',
                 unit: 'C',
@@ -56,7 +56,7 @@ const populateSensors = knex => {
             }),
         knex('sensors')
             .insert({
-                id: 3, 
+                id: 3,
                 serial: 'differentKindOfSerial1',
                 name: 'My sensor',
                 unit: 'kg',
@@ -70,17 +70,17 @@ const populateMeasurements = knex => {
     let measurementPromises = [];
     let measurementIndex = 0;
     _.range(3).forEach(sensorNumber => {
-        let m = moment('2016-10-10 12:00');
+        let m = moment.utc('2016-10-10 12:00');
         _.range(100).forEach(measurementNumber => {
             ++measurementIndex;
             m.add(1, 'minutes');
             const measurementValue = (sensorNumber + 1) * measurementNumber;
             let newPromise = knex('measurements')
                 .insert({
-                    id: measurementIndex, 
+                    id: measurementIndex,
                     value: measurementValue,
-                    created_at: m.toDate(),
-                    updated_at: m.toDate(),
+                    created_at: m.toISOString(),
+                    updated_at: m.toISOString(),
                     sensor_id: sensorNumber + 1
                 });
             measurementPromises.push(newPromise);
@@ -89,9 +89,23 @@ const populateMeasurements = knex => {
     return Promise.all(measurementPromises);
 };
 
+const refreshSequences = knex => {
+    const sequenceNames = [
+        'users',
+        'sensors',
+        'measurements'
+    ];
+
+    return Promise.all(sequenceNames.map(seqName => {
+        return knex.raw(`select setval('${seqName}_id_seq', (select max(id) from  ${seqName}))`);
+    }));
+
+};
+
 exports.seed = function(knex, Promise) {
     return emptyTables(knex)
         .then(() => populateUsers(knex))
         .then(() => populateSensors(knex))
-        .then(() => populateMeasurements(knex));
+        .then(() => populateMeasurements(knex))
+        .then(()=> refreshSequences(knex));
 };
