@@ -117,8 +117,7 @@ describe('Data models', function() {
                 .then(sensors => {
                     assert.equal(sensors.length, 3);
                     done();
-                })
-
+                });
         });
         it('should update sensor data', function(done) {
             Sensor.updateSensor(userId, existingSensorId, existingSensorName, existingSensorUnit)
