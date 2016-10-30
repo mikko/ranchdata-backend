@@ -1,6 +1,7 @@
 "use strict";
 const _ = require('lodash');
 const moment = require('moment');
+const bcrypt = require('bcrypt');
 
 const emptyTables = (knex) => {
     return knex('measurements').del()
@@ -14,25 +15,37 @@ const emptyTables = (knex) => {
 };
 
 const populateUsers = knex => {
-    return Promise.all([
-        // Inserts seed entries
-        knex('users')
-            .insert({
-                id: 1,
-                username: 'firstUser',
-                password: 'password',
-                salt: 'salt',
-                api_key: '00000000-0000-0000-0000-000000000000'
-            }),
-        knex('users')
-            .insert({
-                id: 2,
-                username: 'secondUser',
-                password: 'otherPassword',
-                salt: 'salt',
-                api_key: '10000000-0000-0000-0000-000000000000'
+    const testPassword = "somepassword";
+    return new Promise((resolve, reject) => {
+            bcrypt.genSalt(10, (saltGenErr, salt) => {
+                bcrypt.hash(testPassword, salt, (hashErr, hash) => {
+                    if (hashErr) {
+                        reject();
+                    }
+                    resolve(hash);
+                });
             })
-    ]);
+        })
+        .then(passwordHash => {
+            return Promise.all([
+                // Inserts seed entries
+                knex('users')
+                    .insert({
+                        id: 1,
+                        username: 'firstUser',
+                        password: passwordHash,
+                        api_key: '00000000-0000-0000-0000-000000000000'
+                    }),
+                knex('users')
+                    .insert({
+                        id: 2,
+                        username: 'secondUser',
+                        password: passwordHash,
+                        api_key: '10000000-0000-0000-0000-000000000000'
+                    })
+            ]);
+        });
+
 };
 
 const populateSensors = knex => {

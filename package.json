@@ -20,7 +20,8 @@
   },
   "homepage": "https://github.com/mjpohja/ranchdata-backend#readme",
   "dependencies": {
-    "bluebird": "^3.4.1",
+    "bcrypt": "^0.8.7",
+    "bluebird": "^3.4.6",
     "hapi": "^13.4.1",
     "hapi-auth-cookie": "^6.1.1",
     "inert": "^4.0.2",

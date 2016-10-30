@@ -63,7 +63,7 @@ describe('Data models', function() {
                 .then(user => {
                     assert.equal(user.id, 1);
                     assert.equal(user.username, 'firstUser');
-                    assert.equal(user.password, 'password');
+                    assert.equal(user.password, ''); // Password removed
                     assert.equal(user.api_key, '00000000-0000-0000-0000-000000000000');
                     done();
                 });

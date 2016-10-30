@@ -6,7 +6,6 @@ exports.up = function(knex, Promise) {
           table.increments('id').notNullable();
           table.string('username').notNullable();
           table.string('password').notNullable();
-          table.string('salt').notNullable();
           table.uuid('api_key').defaultsTo(knex.raw('uuid_generate_v4()'));
           table.unique('username');
           table.unique('api_key');
@@ -30,7 +29,7 @@ exports.up = function(knex, Promise) {
           table.foreign('sensor_id').references('sensors.id');
           // sensor
         })
-    ]);  
+    ]);
 };
 
 exports.down = function(knex, Promise) {
