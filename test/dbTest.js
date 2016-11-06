@@ -127,6 +127,14 @@ describe('Data models', function() {
                 });
         });
 
+        it('should get sensor data only for correct user', function(done) {
+            Sensor.getSensorById(999, existingSensorId)
+                .catch(err => {
+                    assert.notEqual(err, undefined);
+                    done();
+                });
+        });
+
     });
 
     describe('Measurement model', function() {
@@ -141,25 +149,40 @@ describe('Data models', function() {
         const rangeEnd = moment.utc('2016-10-10 12:50');
 
         it('should create new measurement', function(done) {
-            Measurement.createMeasurement(sensorId, newValue)
+            Measurement.createMeasurement(userId, sensorId, newValue)
                 .then(measurementId => {
                     assert.equal(Number.isFinite(measurementId), true);
                     done();
                 });
         });
         it('should get latest measurement for sensor id', function(done) {
-            Measurement.getLatestMeasurement(sensorId)
+            Measurement.getLatestMeasurement(userId, sensorId)
                 .then(measurement => {
                     assert.equal(measurement.value, newValue);
                     done();
                 });
         });
         it('should get measurements for range', function(done) {
-            Measurement.getMeasurementsForRange(sensorId, rangeBegin, rangeEnd)
+            Measurement.getMeasurementsForRange(userId, sensorId, rangeBegin, rangeEnd)
                 .then(measurements => {
                     assert.equal(measurements.length, 50);
                     done();
                 });
         });
+        it('should get measurements for only correct user', function(done) {
+            Measurement.getMeasurementsForRange(999, sensorId, rangeBegin, rangeEnd)
+                .catch(err => {
+                    assert.notEqual(err, undefined);
+                    done();
+                });
+        });
+        it('should create new measurement for only correct user', function(done) {
+            Measurement.createMeasurement(999, sensorId, newValue)
+                .catch(err => {
+                    assert.notEqual(err, undefined);
+                    done();
+                });
+        });
+
     });
 });
