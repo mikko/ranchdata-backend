@@ -2,6 +2,14 @@
 
 module.exports = {
   // Uses actually the development database
+  test_init: {
+    client: 'postgresql',
+    connection: {
+      database: 'postgres',
+      user:     'ranch',
+      password: 'ranch'
+    }
+  },
   test: {
     client: 'postgresql',
     connection: {
