@@ -134,6 +134,13 @@ describe('Database', function() {
                         done();
                     });
             });
+            it('should get undefined for non-existing serial', function(done) {
+                Sensor.getSensorBySerial(userId, 'doesnotexist')
+                    .then(sensor => {
+                        assert.equal(sensor, undefined);
+                        done();
+                    });
+            });
             it('should get sensors for user', function(done) {
                 Sensor.getSensorsByUser(userId)
                     .then(sensors => {

@@ -23,10 +23,12 @@
     "bcrypt": "^0.8.7",
     "bluebird": "^3.4.6",
     "boom": "^4.2.0",
-    "hapi": "^13.4.1",
+    "dotenv": "^2.0.0",
+    "hapi": "^13.5.3",
     "hapi-auth-cookie": "^6.1.1",
     "hoek": "^4.1.0",
     "inert": "^4.0.2",
+    "joi": "^10.0.6",
     "knex": "^0.12.5",
     "lodash": "^4.13.1",
     "moment": "^2.15.1",
@@ -40,6 +42,8 @@
     "eslint": "^2.11.1",
     "frontend": "mjpohja/ranchdata-frontend",
     "inert": "^4.0.2",
-    "mocha": "^3.1.2"
+    "mocha": "^3.1.2",
+    "chai": "^3.5.0",
+    "chai-http": "^3.0.0"
   }
 }
