@@ -1,6 +1,5 @@
 const chai = require('chai');
 const chaiHttp = require('chai-http');
-const should = chai.should();
 
 const server = require('../lib/server');
 const routes = require('../lib/routes');
@@ -94,17 +93,17 @@ describe('HTTP', () => {
                 });
         });
 
-        it('should add new sensor for user', (done) => {
-            throw "Not implemented";
+        it('should add new sensor for user', () => {
+            throw 'Not implemented';
         });
-        it('should get sensor details', (done) => {
-            throw "Not implemented";
+        it('should get sensor details', () => {
+            throw 'Not implemented';
         });
-        it('should get latest measurement for sensor', (done) => {
-            throw "Not implemented";
+        it('should get latest measurement for sensor', () => {
+            throw 'Not implemented';
         });
-        it('should get measurements for time range', (done) => {
-            throw "Not implemented";
+        it('should get measurements for time range', () => {
+            throw 'Not implemented';
         });
     });
 });

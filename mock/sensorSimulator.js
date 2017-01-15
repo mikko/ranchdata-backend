@@ -1,5 +1,4 @@
 const http = require('http');
-const querystring = require('querystring');
 
 const apiToken = '?token=00000000-0000-0000-0000-000000000000';
 
@@ -58,4 +57,4 @@ const run = (sensor, runner, value) => {
     setTimeout(run.bind(null, sensor, runner, newValue), tick);
 };
 
-Object.keys(sensorNames).forEach((sensor, value) => run(sensor, sensorNames[sensor].runner, initialValue));
+Object.keys(sensorNames).forEach((sensor) => run(sensor, sensorNames[sensor].runner, initialValue));

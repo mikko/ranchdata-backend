@@ -22,7 +22,7 @@ describe('Database', function() {
                 knex = knexConstructor(config);
                 done();
             })
-            .catch(e => {
+            .catch(() => {
                 knexInit.destroy();
                 // Assuming database exists
                 knex = knexConstructor(config);
@@ -171,7 +171,6 @@ describe('Database', function() {
 
             const userId = 1;
             const sensorId = 1;
-            const existingLatestValue = 99;
 
             const newValue = 9999;
             const rangeBegin = moment.utc('2016-10-10 12:01');
