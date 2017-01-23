@@ -213,5 +213,81 @@ describe('Database', function() {
             });
 
         });
+        describe('Journal model', function() {
+            const Journal = require('../lib/models/journal.js');
+
+            const userId = 1;
+            const sensorId = 1;
+
+            const newEntryType = 'note'
+            const newEntry = 'Test message for new journal entry';
+            const newEntryTime = moment.utc('2016-10-11 12:01');
+
+            const rangeBegin = moment.utc('2016-10-10 11:59');
+            const rangeEnd = moment.utc('2016-10-10 16:50');
+
+            it('should create new note as journal entry', function(done) {
+                Journal.createEntry(userId, newEntryType, newEntry, newEntryTime, null)
+                    .then(entryId => {
+                        assert.equal(Number.isFinite(entryId), true);
+                        done();
+                    });
+            });
+            it('should throw when creating a journal entry for unknown type', function(done) {
+                Journal.createEntry(userId, 'badType', newEntry, newEntryTime, null)
+                    .catch(err => {
+                        assert.notEqual(err, undefined);
+                        done();
+                    });
+            });
+            it('should get N pcs of latest journal entries', function(done) {
+                Journal.getLatestEntries(userId, 5)
+                    .then(entries => {
+                        assert.equal(entries.length, 5);
+                        done();
+                    });
+            });
+            it('should get journal entries for a time range', function(done) {
+                Journal.getEntriesForRange(userId, rangeBegin, rangeEnd)
+                    .then(entries => {
+                        assert.equal(entries.length, 5);
+                        done();
+                    });
+            });
+            it('should get journal entries for a sensor in time range', function(done) {
+                Journal.getEntriesForSensorAndRange(userId, sensorId, rangeBegin, rangeEnd)
+                    .then(entries => {
+                        assert.equal(entries.length, 3);
+                        done();
+                    });
+            });
+            it('should remove journal entry', function(done) {
+                Journal.getLatestEntries(userId, 1)
+                    .then(entries => {
+                        assert.equal(entries.length, 1);
+                        const latestEntry = entries[0];
+                        Journal.removeEntry(userId, latestEntry.id)
+                            .then(rowsRemoved => {
+                                assert.equal(rowsRemoved, 1);
+                                done();
+                            });
+                    });
+            });
+            it('should mark journal entry done', function(done) {
+                Journal.getLatestEntries(userId, 1)
+                    .then(originalEntries => {
+                        const entryId = originalEntries[0].id;
+                        Journal.setEntryDone(userId, entryId)
+                            .then(() => {
+                                Journal.getLatestEntries(userId, 1)
+                                    .then(updatedEntries => {
+                                        const updatedEntry = updatedEntries[0];
+                                        assert.equal(updatedEntry.id, entryId);
+                                        done();
+                                    });
+                            });
+                    });
+            });
+        });
     });
 });
