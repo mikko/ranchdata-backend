@@ -219,7 +219,7 @@ describe('Database', function() {
             const userId = 1;
             const sensorId = 1;
 
-            const newEntryType = 'note'
+            const newEntryType = 'note';
             const newEntry = 'Test message for new journal entry';
             const newEntryTime = moment.utc('2016-10-11 12:01');
 
