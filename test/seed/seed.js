@@ -102,11 +102,31 @@ const populateMeasurements = knex => {
     return Promise.all(measurementPromises);
 };
 
+const populateJournalEntries = knex => {
+    let journalPromises = [];
+    let m = moment.utc('2016-10-10 11:00');
+    _.range(30).forEach(messageIndex => {
+        m.add(1, 'hours');
+        let newPromise = knex('journal')
+            .insert({
+                id: messageIndex,
+                type: 'note',
+                entry: `Journal entry ${messageIndex}`,
+                sensor_id: messageIndex % 2 === 0 ? 1 : null,
+                time: m.toISOString(),
+                user_id: '1'
+            });
+        journalPromises.push(newPromise);
+    });
+    return Promise.all(journalPromises);
+};
+
 const refreshSequences = knex => {
     const sequenceNames = [
         'users',
         'sensors',
-        'measurements'
+        'measurements',
+        'journal',
     ];
 
     return Promise.all(sequenceNames.map(seqName => {
@@ -120,5 +140,6 @@ exports.seed = function(knex, Promise) {
         .then(() => populateUsers(knex))
         .then(() => populateSensors(knex))
         .then(() => populateMeasurements(knex))
+        .then(() => populateJournalEntries(knex))
         .then(()=> refreshSequences(knex));
 };
