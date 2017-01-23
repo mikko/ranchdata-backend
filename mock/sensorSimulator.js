@@ -9,15 +9,26 @@ const randomisedCounter = prevValue => prevValue + Math.random();
 const binaryValue = () => Math.random() < 0.5 ? 0 : 1;
 
 const sensorNames = {
-    'counter': {
-        runner: simpleCounter,
-    },
-    'random': {
-        runner: randomisedCounter,
-    },
-    'bin': {
-        runner: binaryValue,
-    },
+    'counter1': {runner: simpleCounter},
+    'counter2': {runner: simpleCounter},
+    'counter3': {runner: simpleCounter},
+    'random1': {runner: randomisedCounter},
+    'random2': {runner: randomisedCounter},
+    'random3': {runner: randomisedCounter},
+    'random4': {runner: randomisedCounter},
+    'random5': {runner: randomisedCounter},
+    'random6': {runner: randomisedCounter},
+    'random7': {runner: randomisedCounter},
+    'random8': {runner: randomisedCounter},
+    'random9': {runner: randomisedCounter},
+    'random10': {runner: randomisedCounter},
+    'random11': {runner: randomisedCounter},
+    'random12': {runner: randomisedCounter},
+    'random13': {runner: randomisedCounter},
+    'random14': {runner: randomisedCounter},
+    'bin1': {runner: binaryValue},
+    'bin2': {runner: binaryValue},
+    'bin3': {runner: binaryValue},
 };
 
 const run = (sensor, runner, value) => {
