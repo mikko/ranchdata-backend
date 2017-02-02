@@ -289,5 +289,36 @@ describe('Database', function() {
                     });
             });
         });
+
+        describe('View model', function() {
+            const View = require('../lib/models/view.js');
+            const newViewTitle = 'New view';
+            const newViewData = {
+                key: 'value',
+                someArray: [
+                    1,
+                    2,
+                    3,
+                ],
+            };
+            const userId = 1;
+
+            it('should create new view with JSON data', function(done) {
+                View.createView(userId, newViewTitle, newViewData)
+                    .then(entryId => {
+                        assert.equal(Number.isFinite(entryId), true);
+                        done();
+                    });
+            });
+            it('should get a list of views for a user', function(done) {
+                View.getViews(userId)
+                    .then(viewList => {
+                        assert.equal(viewList.length, 1);
+                        assert.equal(JSON.stringify(viewList[0].viewdata), JSON.stringify(newViewData));
+                        assert.equal(viewList[0].title, newViewTitle);
+                        done();
+                    });
+            });
+        });
     });
 });
