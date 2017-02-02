@@ -107,7 +107,7 @@ const populateJournalEntries = knex => {
     let m = moment.utc('2016-10-10 11:00');
     _.range(30).forEach(messageIndex => {
         m.add(1, 'hours');
-        let newPromise = knex('journal')
+        let newPromise = knex('journalentries')
             .insert({
                 id: messageIndex,
                 type: 'note',
@@ -126,7 +126,7 @@ const refreshSequences = knex => {
         'users',
         'sensors',
         'measurements',
-        'journal',
+        'journalentries',
     ];
 
     return Promise.all(sequenceNames.map(seqName => {
