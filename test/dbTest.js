@@ -301,22 +301,43 @@ describe('Database', function() {
                     3,
                 ],
             };
+            const updatedViewTitle = 'Updated view';
+            const updatedViewData = {
+                key: 'updated value',
+                someArray: [
+                    1,
+                    2,
+                    3,
+                    4,
+                ],
+            };
             const userId = 1;
 
-            it('should create new view with JSON data', function(done) {
-                View.createView(userId, newViewTitle, newViewData)
+            it('should create new view with JSON data and title', function(done) {
+                View.createOrUpdateView(userId, newViewTitle, newViewData)
                     .then(entryId => {
                         assert.equal(Number.isFinite(entryId), true);
                         done();
                     });
             });
-            it('should get a list of views for a user', function(done) {
-                View.getViews(userId)
-                    .then(viewList => {
-                        assert.equal(viewList.length, 1);
-                        assert.equal(JSON.stringify(viewList[0].viewdata), JSON.stringify(newViewData));
-                        assert.equal(viewList[0].title, newViewTitle);
+            it('should get a view for a user', function(done) {
+                View.getView(userId)
+                    .then(view => {
+                        assert.equal(JSON.stringify(view.viewdata), JSON.stringify(newViewData));
+                        assert.equal(view.title, newViewTitle);
                         done();
+                    });
+            });
+            it('should update a view with JSON data and title', function(done) {
+                View.createOrUpdateView(userId, updatedViewTitle, updatedViewData)
+                    .then(entryId => {
+                        assert.equal(Number.isFinite(entryId), true);
+                        View.getView(userId)
+                            .then(view => {
+                                assert.equal(JSON.stringify(view.viewdata), JSON.stringify(updatedViewData));
+                                assert.equal(view.title, updatedViewTitle);
+                                done();
+                            });
                     });
             });
         });

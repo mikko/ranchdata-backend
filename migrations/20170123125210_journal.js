@@ -19,6 +19,7 @@ exports.up = function(knex, Promise) {
             table.jsonb('viewdata').notNullable();
             table.integer('user_id').notNullable();
             table.foreign('user_id').references('users.id');
+            table.unique(['user_id']);
             table.timestamps(true, true);
         }),
         // alarms
