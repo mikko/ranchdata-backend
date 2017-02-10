@@ -90,6 +90,13 @@ describe('Database', function() {
                         done();
                     });
             });
+            it('should get all users as a list', function(done) {
+                User.getAllUserIDs()
+                    .then(userList => {
+                        assert.equal(userList.length, 3);
+                        done();
+                    });
+            });
 
         });
 
@@ -223,6 +230,8 @@ describe('Database', function() {
             const newEntry = 'Test message for new journal entry';
             const newEntryTime = moment.utc('2016-10-11 12:01');
 
+            const limit = 4;
+
             const rangeBegin = moment.utc('2016-10-10 11:59');
             const rangeEnd = moment.utc('2016-10-10 16:50');
 
@@ -240,10 +249,28 @@ describe('Database', function() {
                         done();
                     });
             });
-            it('should get N pcs of latest journal entries', function(done) {
-                Journal.getLatestEntries(userId, 5)
+            it('should get most relevant journal entries', function(done) {
+                Journal.getRelevantEntries(userId, limit)
                     .then(entries => {
-                        assert.equal(entries.length, 5);
+                        assert.equal(entries.length, limit);
+                        let choreCount = 0;
+                        let otherCount = 0;
+                        entries.forEach(entry => {
+                            if (entry.chore_id === null) {
+                                ++otherCount;
+                            } else {
+                                ++choreCount;
+                            }
+                        });
+                        assert.equal(choreCount, 2);
+                        assert.equal(otherCount, limit - 2);
+                        done();
+                    });
+            });
+            it('should get N pcs of latest journal entries', function(done) {
+                Journal.getLatestEntries(userId, limit)
+                    .then(entries => {
+                        assert.equal(entries.length, limit);
                         done();
                     });
             });
@@ -286,6 +313,13 @@ describe('Database', function() {
                                         done();
                                     });
                             });
+                    });
+            });
+            it('should get journal entries for chores', function(done) {
+                Journal.getEntriesForChores(userId)
+                    .then(entries => {
+                        assert.equal(entries.length, 2);
+                        done();
                     });
             });
         });
@@ -341,5 +375,45 @@ describe('Database', function() {
                     });
             });
         });
+        describe('Chore model', function() {
+            const Chore = require('../lib/models/chore.js');
+
+            const userId = 1;
+            const message = 'Chores keep on choring';
+            const recurrence = 'every 2nd week on wednesday';
+
+            const existingChoreId = 1;
+            const newMessage = 'Updated first chore';
+
+            it('should create new chore', function(done) {
+                Chore.createChore(userId, message, recurrence, null)
+                    .then(choreId => {
+                        assert.equal(Number.isFinite(choreId), true);
+                        done();
+                    });
+            });
+            it('should get all chores for user', function(done) {
+                Chore.getAllChores(userId)
+                    .then(chores => {
+                        assert.equal(chores.length, 3);
+                        done();
+                    });
+            });
+            it('should update chore', function(done) {
+                Chore.updateChore(userId, existingChoreId, newMessage, recurrence, null)
+                    .then(updatedChores => {
+                        assert.equal(updatedChores, 1);
+                        done();
+                    });
+            });
+            it('should remove chore', function(done) {
+                Chore.removeChore(userId, existingChoreId)
+                    .then(removedCount => {
+                        assert.equal(removedCount, 1);
+                        done();
+                    });
+            });
+        });
+
     });
 });

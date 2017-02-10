@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 const _ = require('lodash');
 const moment = require('moment');
 const bcrypt = require('bcrypt');
@@ -15,7 +15,7 @@ const emptyTables = (knex) => {
 };
 
 const populateUsers = knex => {
-    const testPassword = "somepassword";
+    const testPassword = 'somepassword';
     return new Promise((resolve, reject) => {
             bcrypt.genSalt(10, (saltGenErr, salt) => {
                 bcrypt.hash(testPassword, salt, (hashErr, hash) => {
@@ -24,7 +24,7 @@ const populateUsers = knex => {
                     }
                     resolve(hash);
                 });
-            })
+            });
         })
         .then(passwordHash => {
             return Promise.all([
@@ -97,8 +97,8 @@ const populateMeasurements = knex => {
                     sensor_id: sensorNumber + 1
                 });
             measurementPromises.push(newPromise);
-        })
-    })
+        });
+    });
     return Promise.all(measurementPromises);
 };
 
@@ -121,12 +121,59 @@ const populateJournalEntries = knex => {
     return Promise.all(journalPromises);
 };
 
+const populateChores = knex => {
+    return Promise.all([
+        knex('chores')
+            .insert({
+                id: 1,
+                message: 'note',
+                recurrence: 'on the first day of the month',
+                sensor_id: null,
+                user_id: 1,
+            }),
+        knex('chores')
+            .insert({
+                id: 2,
+                message: 'note 2',
+                recurrence: 'on the last day of the month',
+                sensor_id: null,
+                user_id: 1,
+            }),
+        ])
+        .then(() => {
+            return Promise.all([
+                knex('journalentries')
+                    .insert({
+                        id: 31,
+                        type: 'note',
+                        entry: 'chore',
+                        sensor_id: null,
+                        time: moment.utc('2016-10-01 00:00').toISOString(),
+                        user_id: 1,
+                        chore_id: 1,
+                    }),
+                knex('journalentries')
+                    .insert({
+                        id: 32,
+                        type: 'note',
+                        entry: 'chore',
+                        sensor_id: null,
+                        time: moment.utc('2016-10-30 11:00').toISOString(),
+                        user_id: 1,
+                        chore_id: 2,
+                    }),
+            ]);
+        });
+};
+
 const refreshSequences = knex => {
     const sequenceNames = [
         'users',
         'sensors',
         'measurements',
         'journalentries',
+        'views',
+        'chores',
     ];
 
     return Promise.all(sequenceNames.map(seqName => {
@@ -141,5 +188,6 @@ exports.seed = function(knex, Promise) {
         .then(() => populateSensors(knex))
         .then(() => populateMeasurements(knex))
         .then(() => populateJournalEntries(knex))
+        .then(() => populateChores(knex))
         .then(()=> refreshSequences(knex));
 };
