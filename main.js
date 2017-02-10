@@ -2,10 +2,15 @@
 
 const server = require('./lib/server');
 const _ = require('lodash');
+const scheduler = require('./lib/scheduler');
+const choreScheduler = require('./lib/jobs/choreScheduler');
 
 const routes = require('./lib/routes');
 
 server.start(3000, routes);
+
+scheduler.startJob('0 * * * *', choreScheduler);
+
 // server.startSocket();
 
 /*
