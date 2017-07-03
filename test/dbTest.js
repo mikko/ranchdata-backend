@@ -178,10 +178,13 @@ describe('Database', function() {
 
             const userId = 1;
             const sensorId = 1;
+            const sensorSerial = 'sensor-1';
 
             const newValue = 9999;
             const rangeBegin = moment.utc('2016-10-10 12:01');
             const rangeEnd = moment.utc('2016-10-10 12:50');
+
+            const customTimestamp = moment.utc('1995-05-07 21:50');
 
             it('should create new measurement', function(done) {
                 Measurement.createMeasurement(userId, sensorId, newValue)
@@ -191,23 +194,23 @@ describe('Database', function() {
                     });
             });
             it('should get latest measurement for sensor id', function(done) {
-                Measurement.getLatestMeasurement(userId, sensorId)
+                Measurement.getLatestMeasurement(userId, sensorSerial)
                     .then(measurement => {
                         assert.equal(measurement.value, newValue);
                         done();
                     });
             });
             it('should get measurements for range', function(done) {
-                Measurement.getMeasurementsForRange(userId, sensorId, rangeBegin, rangeEnd)
+                Measurement.getMeasurementsForRange(userId, sensorSerial, rangeBegin, rangeEnd)
                     .then(measurements => {
                         assert.equal(measurements.length, 50);
                         done();
                     });
             });
-            it('should get measurements for only correct user', function(done) {
+            it('should get measurements only for correct user', function(done) {
                 Measurement.getMeasurementsForRange(999, sensorId, rangeBegin, rangeEnd)
-                    .catch(err => {
-                        assert.notEqual(err, undefined);
+                    .then(measurements => {
+                        assert.equal(measurements.length, 0);
                         done();
                     });
             });
@@ -215,6 +218,15 @@ describe('Database', function() {
                 Measurement.createMeasurement(999, sensorId, newValue)
                     .catch(err => {
                         assert.notEqual(err, undefined);
+                        done();
+                    });
+            });
+            it('should create new measurement with custom timestamp', function(done) {
+                Measurement.createMeasurement(userId, sensorId, newValue, customTimestamp)
+                    .then(() => Measurement.getLatestMeasurement(userId, sensorSerial))
+                    .then(measurement => {
+                        assert.equal(measurement.value, newValue);
+                        assert.equal(measurement.measurement_time.toISOString(), customTimestamp.toISOString());
                         done();
                     });
             });
