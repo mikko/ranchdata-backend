@@ -1,6 +1,6 @@
 const http = require('http');
 
-const apiToken = '?token=00000000-0000-0000-0000-000000000000';
+const apiToken = '?apikey=00000000-0000-0000-0000-000000000000';
 
 const tick = 5000; // in ms
 const initialValue = 0;
@@ -38,7 +38,7 @@ const run = (sensor, runner, value) => {
     const options = {
         hostname: 'localhost',
         port: 3000,
-        path: `/api/v1/measurement${apiToken}`,
+        path: `/api/v1/sensor/${sensor}/measurement${apiToken}`,
         method: 'POST',
     };
 
@@ -58,7 +58,6 @@ const run = (sensor, runner, value) => {
 
     // write data to request body
     const postData = JSON.stringify({
-        'sensor': sensor,
         'value': newValue,
     });
 
