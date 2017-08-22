@@ -87,6 +87,7 @@ describe('Database', function() {
                         assert.equal(user.username, 'firstUser');
                         assert.equal(user.password, ''); // Password removed
                         assert.equal(user.api_key, '00000000-0000-0000-0000-000000000000');
+                        assert.equal(user.location, 'Tampere');
                         done();
                     });
             });

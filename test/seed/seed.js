@@ -34,14 +34,16 @@ const populateUsers = knex => {
                         id: 1,
                         username: 'firstUser',
                         password: passwordHash,
-                        api_key: '00000000-0000-0000-0000-000000000000'
+                        api_key: '00000000-0000-0000-0000-000000000000',
+                        location: 'Tampere'
                     }),
                 knex('users')
                     .insert({
                         id: 2,
                         username: 'secondUser',
                         password: passwordHash,
-                        api_key: '10000000-0000-0000-0000-000000000000'
+                        api_key: '10000000-0000-0000-0000-000000000000',
+                        location: 'Pori'
                     })
             ]);
         });
@@ -94,6 +96,7 @@ const populateMeasurements = knex => {
                     value: measurementValue,
                     created_at: m.toISOString(),
                     updated_at: m.toISOString(),
+                    measurement_time: m.toISOString(),
                     sensor_id: sensorNumber + 1
                 });
             measurementPromises.push(newPromise);
