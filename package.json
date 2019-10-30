@@ -42,7 +42,7 @@
     "ws": "^1.1.0"
   },
   "devDependencies": {
-    "eslint": "^2.11.1",
+    "eslint": "^6.6.0",
     "frontend": "mjpohja/ranchdata-frontend",
     "inert": "^4.0.2",
     "mocha": "^3.1.2",
