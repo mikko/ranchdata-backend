@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/mjpohja/ranchdata-backend#readme",
   "dependencies": {
-    "bcrypt": "^0.8.7",
+    "bcrypt": "^5.0.0",
     "bluebird": "^3.4.6",
     "boom": "^4.2.0",
     "dotenv": "^2.0.0",
